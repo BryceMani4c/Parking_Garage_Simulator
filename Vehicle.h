@@ -1,7 +1,9 @@
-/*
-File: Vehicle.h
-Purpose: Header file to hold characteristics of each vehicle
-*/
+/*****************************************************************
+	Filename:       Vehicle.h
+	Date Created:   Oct 18
+	Author:         Alek,Tobin,Bryson
+******************************************************************/
+
 #include <iostream>
 using namespace std;
 
@@ -19,10 +21,9 @@ class Vehicle
         string ownerName;
         bool isFancyOwner;
         int year;
-        double value;
     public:
         //constructor and deconstructor function prototypes
-        Vehicle(string,string,string,string,string);
+        Vehicle(string,string,string,string,string, bool, int);
         ~Vehicle();
         //Comparative Overloaders
 
@@ -67,9 +68,6 @@ class Vehicle
     int Vehicle::getYear(){
         return this->year;
     };
-    bool Vehicle::getValue(){
-        return this->value;
-    };
 
         //setters
     void Vehicle::setColor(string newColor){
@@ -92,9 +90,6 @@ class Vehicle
     };
     void Vehicle::setYear(int newYear){
         year = newYear;
-    };
-    void Vehicle::setValue(double newValue){
-        value = newValue;
     };
     
 #endif

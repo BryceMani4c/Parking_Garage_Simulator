@@ -1,11 +1,19 @@
-//File Name:    Driver.cpp
-//Author(s):    Bryson Bargas,
+/*****************************************************************
+	Filename:       Driver.cpp
+	Date Created:   Oct 18
+	Author:         Alek,Tobin,Bryson
+******************************************************************/
 
 #include "LinkedList.h"
 #include "ParkingLotManager.h"
 #include "Vehicle.h"
 #include <iostream>
+#include <memory>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
+
+void GenerateCar();
 
 int main(){
     int day = 1;
@@ -69,4 +77,131 @@ int main(){
     cin.get();
 
     return 0;
+}
+
+// Will generate a completely custom car
+void GenerateCar(){
+    srand(time(0));
+    string color, make, model, plate = "";
+    bool fancyOwner;
+    int year, randomNumber;
+
+    // Generates a random color for Car
+    randomNumber = rand() % 10 + 1;
+    switch(randomNumber){
+        case 1:
+            color = "Silver";
+        break;
+        case 2:
+            color = "Navy";
+        break;
+        case 3:
+            color = "Maroon";
+        break;
+        case 4:
+            color = "Orange";
+        break;
+        case 5:
+            color = "White";
+        break;
+        case 6:
+            color = "Yellow";
+        break;
+        case 7:
+            color = "Green";
+        break;
+        case 8:
+            color = "Cyan";
+        break;
+        case 9:
+            color = "Black";
+        break;
+        case 10:
+            color = "Red";
+        break;
+        default:
+            cout << "error" << endl;
+    }
+
+    // Generates A random Number for make of the car
+    randomNumber = rand() % 10 + 1;
+    switch(randomNumber){
+        case 1:
+            make = "Kia";
+        break;
+        case 2:
+            make = "Chevrolet";
+        break;
+        case 3:
+            make = "Nissan";
+        break;
+        case 4:
+            make = "Mercedes-Benz";
+        break;
+        case 5:
+            make = "BMW";
+        break;
+        case 6:
+            make = "Mazda";
+        break;
+        case 7:
+            make = "Volvo";
+        break;
+        case 8:
+            make = "Audi";
+        break;
+        case 9:
+            make = "Subaru";
+        break;
+        case 10:
+            make = "Porshe";
+        break;
+        default:
+            cout << "error" << endl;
+    }
+
+    // Generates a random model for the car
+    randomNumber = rand() % 10 + 1;
+    switch(randomNumber){
+        case 1:
+            model = "Ranger";
+        break;
+        case 2:
+            model = "Falcon";
+        break;
+        case 3:
+            model = "Vortex";
+        break;
+        case 4:
+            model = "Nova";
+        break;
+        case 5:
+            model = "Striker";
+        break;
+        case 6:
+            model = "Promtus";
+        break;
+        case 7:
+            model = "Storm";
+        break;
+        case 8:
+            model = "Delorian";
+        break;
+        case 9:
+            model = "Subaru";
+        break;
+        case 10:
+            model = "Porshe";
+        break;
+        default:
+            cout << "error" << endl;
+    }
+
+    bool numOrLetter; 
+    for(int i = 0; i <= 6; i++){
+
+    }
+
+
+
 }

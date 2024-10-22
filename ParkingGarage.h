@@ -1,12 +1,7 @@
 /*****************************************************************
-	Filename:       Storage.h
+	Filename:       ParkingGarage.h
 	Date Created:   Oct 18
 	Author:         Alek,Tobin,Bryson
-    Purpose:        Template class array Storage<Vehicle>
+    Purpose:        Is a linked list of Parking Lots, 
+                    LinkedList< Storage< Vehicle > >
 ******************************************************************/
-
-class Storage{
-    private:
-        
-    public:
-};
