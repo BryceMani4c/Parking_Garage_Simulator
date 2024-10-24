@@ -83,7 +83,7 @@ int main(){
 void GenerateCar(){
     srand(time(0));
     string color, make, model, plate = "";
-    bool fancyOwner;
+    bool fancyOwner = false;
     int year, randomNumber;
 
     // Generates a random color for Car
@@ -197,11 +197,22 @@ void GenerateCar(){
             cout << "error" << endl;
     }
 
-    bool numOrLetter; 
-    for(int i = 0; i <= 6; i++){
-
+    // Generates a random 6 digit ascii number
+    for (int i = 0; i < 6; i++) {
+        char randomChar = 32 + rand() % (126 - 32 + 1);
+        plate += randomChar;
     }
 
+    // gives a 5% chance to be a fancy Owner
+    randomNumber = rand() % 20 + 1;
+    if(randomNumber == 1){
+        fancyOwner = true;
+    }
 
+    // Randomly generates a car that can be up to 100 years old.
+    year = rand() % 100 + 1924;
+
+    // Calls Vehicle constructor with randomly generated values
+    Vehicle::Vehicle(color, make, model, plate, fancyOwner, year);
 
 }
