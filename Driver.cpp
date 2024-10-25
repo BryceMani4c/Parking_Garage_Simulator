@@ -5,7 +5,7 @@
 ******************************************************************/
 
 #include "LinkedList.h"
-#include "ParkingLotManager.h"
+#include "ParkingGarage.h"
 #include "Vehicle.h"
 #include <iostream>
 #include <memory>
@@ -80,7 +80,8 @@ int main(){
 }
 
 // Will generate a completely custom car
-void GenerateCar(){
+template <typename T>
+T GenerateCar(){
     srand(time(0));
     string color, make, model, plate = "";
     bool fancyOwner = false;
@@ -213,6 +214,6 @@ void GenerateCar(){
     year = rand() % 100 + 1924;
 
     // Calls Vehicle constructor with randomly generated values
-    Vehicle::Vehicle(color, make, model, plate, fancyOwner, year);
+    return Vehicle(color, make, model, plate, fancyOwner, year);
 
 }

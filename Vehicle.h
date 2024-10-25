@@ -18,12 +18,18 @@ class Vehicle
         string make;
         string model;
         string plateID;
-        string ownerName;
         bool isFancyOwner;
         int year;
     public:
-        //constructor and deconstructor function prototypes
-        Vehicle(string,string,string,string,string, bool, int);
+        //constructor and deconstructor function
+        Vehicle(string inColor, string inMake ,string inModel,string inPlateID, bool inIsFancyOwner, int inYear){
+            color = inColor;
+            make = inMake;
+            model = inModel;
+            plateID = inPlateID;
+            isFancyOwner = inIsFancyOwner;
+            year = inYear;
+        }
         ~Vehicle();
         //Comparative Overloaders
 
@@ -32,7 +38,6 @@ class Vehicle
         string getMake();
         string getModel();
         string getPlateID();
-        string getOwnerName();
         bool getIsFancyOwner();
         int getYear();
         bool getValue();
@@ -41,7 +46,6 @@ class Vehicle
         void setMake(string);
         void setModel(string);
         void setPlateID(string);
-        void setOwnerName(string);
         void setIsFancyOwner(bool);
         void setYear(int);
         void setValue(double);        
@@ -58,9 +62,6 @@ class Vehicle
     };
     string Vehicle::getPlateID(){
         return this->plateID;
-    };
-    string Vehicle::getOwnerName(){
-        return this->ownerName;
     };
     bool Vehicle::getIsFancyOwner(){
         return this->isFancyOwner;
@@ -82,14 +83,30 @@ class Vehicle
     void Vehicle::setPlateID(string newPlateID){
         plateID = newPlateID;
     };
-    void Vehicle::setOwnerName(string newOwnerName){
-        ownerName = newOwnerName;
-    };
     void Vehicle::setIsFancyOwner(bool newIsFancyOwner){
         isFancyOwner = newIsFancyOwner;
     };
     void Vehicle::setYear(int newYear){
         year = newYear;
     };
-    
+    bool operator<(const Vehicle& other) const {
+        return this->plateID < other.plateID;
+    };
+    ostream & operator << (ostream & os, Vehicle p)
+    {
+        os << "\nPickle Type:\t" << h.name;
+        os << "\nBumpy Skin?\t";
+        if(p.bumpySkin)
+            os << "yes\n";
+        else
+            os << "no\n";
+        os << "Sweet?\t\t";
+        if(p.sweet)
+            os << "yes\n";
+        else
+            os << "no\n";
+        
+        return os;
+    }
+};
 #endif
