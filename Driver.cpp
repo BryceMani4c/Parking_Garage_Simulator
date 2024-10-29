@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <Vector>
+#include <random>
 using namespace std;
 
 Vehicle GenerateCar();
@@ -23,6 +24,10 @@ void EndGame();
 ParkingGarage garage;
 double balance = 200.00;
 int day = 0;
+random_device rd;
+mt19937 gen(rd());
+int lower, upper;
+uniform_int_distribution<> distrib(lower, upper);
 
 int main(){
     int choice;
@@ -76,13 +81,15 @@ int main(){
 }
 
 Vehicle GenerateCar(){
-    srand(time(0));
     string color, make, model, plate = "";
     bool fancyOwner = false;
     int year, randomNumber;
+    lower = 1;
+    upper = 10;
 
     // Generates a random color for Car
-    randomNumber = rand() % 10 + 1;
+    srand(time(NULL));
+    randomNumber = distrib(gen);
     switch(randomNumber){
         case 1:
             color = "Silver";
@@ -119,7 +126,8 @@ Vehicle GenerateCar(){
     }
 
     // Generates A random Number for make of the car
-    randomNumber = rand() % 10 + 1;
+    srand(time(NULL));
+    randomNumber = distrib(gen);
     switch(randomNumber){
         case 1:
             make = "Kia";
@@ -156,7 +164,8 @@ Vehicle GenerateCar(){
     }
 
     // Generates a random model for the car
-    randomNumber = rand() % 10 + 1;
+    srand (time(NULL));
+    randomNumber = distrib(gen);
     switch(randomNumber){
         case 1:
             model = "Ranger";
@@ -193,19 +202,30 @@ Vehicle GenerateCar(){
     }
 
     // Generates a random 6 digit ascii number
+    char randomChar;
+    lower = 1;
+    upper = 95;
     for (int i = 0; i < 6; i++) {
-        char randomChar = 32 + rand() % (126 - 32 + 1);
+        srand (time(NULL));
+        randomNumber = distrib(gen);
         plate += randomChar;
     }
 
     // gives a 5% chance to be a fancy Owner
-    randomNumber = rand() % 20 + 1;
+    lower = 1;
+    upper = 95;
+    srand(time(NULL));
+    randomNumber = distrib(gen);
     if(randomNumber == 1){
         fancyOwner = true;
     }
 
     // Randomly generates a car that can be up to 100 years old.
-    year = rand() % 100 + 1924;
+    lower = 1980;
+    upper = 2025;
+    uniform_int_distribution<> distrib(lower, upper);
+    srand(time(NULL));
+    year = distrib(gen);
 
     // Calls Vehicle constructor with randomly generated values
     return Vehicle(color, make, model, plate, fancyOwner, year);
@@ -281,21 +301,26 @@ void NewDay(){
     cin.get();
     day++;
 
-    srand(time(0));
-    int i = rand() % garage.numberOfLots()*10 + 1;
-    while(i < 10){
-        i++;
-    }
+    
+    random_device rd;
+    mt19937 gen(rd());
+    int randomNumber;
+    int lower = 1;
+    int upper = 15;
+    srand(time(NULL));
+    randomNumber = distrib(gen);
 
-    int j;
+    int j, i;
     parkingLot<Vehicle>* targetLot = nullptr;
+    lower = 1;
+    upper = garage.numberOfLots();
     while(i != 0){
-        srand(time(0));
-        j = rand() % garage.numberOfLots() + 1;
+        srand(time(NULL));
+        j = distrib(gen);
         Vehicle newVehicle = GenerateCar();
         parkingLot<Vehicle>* selectedLot = garage.getParkingLot(j);
         selectedLot->append(newVehicle);
-        cout << "done";
+        cout << "\nadded cars to index " << j;
     }}
 
 void EndGame(){
