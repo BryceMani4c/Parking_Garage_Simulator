@@ -34,9 +34,18 @@ class parkingLot{
         void append(T vehicle){
             theParkingLot.appendNode(vehicle);
         };
+
         void display(){
             cout << *this;
             theParkingLot.displayList();
+        }
+
+        int getSpaces(){
+            return spaces;
+        }
+
+        void clear(){
+        theParkingLot = List<Vehicle>();
         }
 
         friend ostream& operator<<(ostream& os, const parkingLot<T>& lot) {
