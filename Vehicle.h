@@ -1,7 +1,9 @@
-/*
-File: Vehicle.h
-Purpose: Header file to hold characteristics of each vehicle
-*/
+/*****************************************************************
+	Filename:       Vehicle.h
+	Date Created:   Oct 18
+	Author:         Alek,Tobin,Bryson
+******************************************************************/
+
 #include <iostream>
 using namespace std;
 
@@ -16,14 +18,27 @@ class Vehicle
         string make;
         string model;
         string plateID;
-        string ownerName;
         bool isFancyOwner;
         int year;
-        double value;
     public:
-        //constructor and deconstructor function prototypes
-        Vehicle(string,string,string,string,string);
-        ~Vehicle();
+        //constructor and deconstructor function
+        Vehicle(){
+            color = "";
+            make = "";
+            model = "";
+            plateID = "";
+            isFancyOwner = false;
+            year = 0;
+        }
+        Vehicle(string inColor, string inMake ,string inModel,string inPlateID, bool inIsFancyOwner, int inYear){
+            color = inColor;
+            make = inMake;
+            model = inModel;
+            plateID = inPlateID;
+            isFancyOwner = inIsFancyOwner;
+            year = inYear;
+        }
+        ~Vehicle(){};
         //Comparative Overloaders
 
         //getter prototypes
@@ -31,7 +46,6 @@ class Vehicle
         string getMake();
         string getModel();
         string getPlateID();
-        string getOwnerName();
         bool getIsFancyOwner();
         int getYear();
         bool getValue();
@@ -40,7 +54,6 @@ class Vehicle
         void setMake(string);
         void setModel(string);
         void setPlateID(string);
-        void setOwnerName(string);
         void setIsFancyOwner(bool);
         void setYear(int);
         void setValue(double);        
@@ -58,17 +71,11 @@ class Vehicle
     string Vehicle::getPlateID(){
         return this->plateID;
     };
-    string Vehicle::getOwnerName(){
-        return this->ownerName;
-    };
     bool Vehicle::getIsFancyOwner(){
         return this->isFancyOwner;
     };
     int Vehicle::getYear(){
         return this->year;
-    };
-    bool Vehicle::getValue(){
-        return this->value;
     };
 
         //setters
@@ -84,17 +91,14 @@ class Vehicle
     void Vehicle::setPlateID(string newPlateID){
         plateID = newPlateID;
     };
-    void Vehicle::setOwnerName(string newOwnerName){
-        ownerName = newOwnerName;
-    };
     void Vehicle::setIsFancyOwner(bool newIsFancyOwner){
         isFancyOwner = newIsFancyOwner;
     };
     void Vehicle::setYear(int newYear){
         year = newYear;
     };
-    void Vehicle::setValue(double newValue){
-        value = newValue;
+    bool operator<<(Vehicle& lhs, Vehicle& rhs) {
+    return lhs.getPlateID() < rhs.getPlateID();
     };
     
 #endif
