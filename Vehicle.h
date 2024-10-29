@@ -30,7 +30,7 @@ class Vehicle
             isFancyOwner = inIsFancyOwner;
             year = inYear;
         }
-        ~Vehicle();
+        ~Vehicle(){};
         //Comparative Overloaders
 
         //getter prototypes
@@ -89,24 +89,8 @@ class Vehicle
     void Vehicle::setYear(int newYear){
         year = newYear;
     };
-    bool operator<(const Vehicle& other) const {
-        return this->plateID < other.plateID;
+    bool operator<<(Vehicle& lhs, Vehicle& rhs) {
+    return lhs.getPlateID() < rhs.getPlateID();
     };
-    ostream & operator << (ostream & os, Vehicle p)
-    {
-        os << "\nPickle Type:\t" << h.name;
-        os << "\nBumpy Skin?\t";
-        if(p.bumpySkin)
-            os << "yes\n";
-        else
-            os << "no\n";
-        os << "Sweet?\t\t";
-        if(p.sweet)
-            os << "yes\n";
-        else
-            os << "no\n";
-        
-        return os;
-    }
-};
+    
 #endif

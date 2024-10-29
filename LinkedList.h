@@ -19,6 +19,12 @@ class List
 			T element;
 			Node *nextNode;
 			Node *prevNode;
+
+			Node(T elem){
+				element = elem;
+				nextNode = nullptr;
+				prevNode = nullptr;
+			}
 		}; 
 
 		Node *head;	
@@ -27,12 +33,12 @@ class List
 	public:
 		List()
 		{ 
-			head = NULL; 
-			tail = NULL;
+			head = nullptr; 
+			tail = nullptr;
 		}
 		~List(){
             Node* nextNode;
-            while(head != NULL){ //while the head doesn't equal null
+            while(head != nullptr){ //while the head doesn't equal null
                 nextNode = head->nextNode; //get the node in front of head
 				cout << "\n*****DELETING node with address:   " << head; //printing out the head
                 delete head; //delete the node
@@ -40,22 +46,22 @@ class List
             }
 		};
 		void appendNode(T element){
-			Node* newNode = new Node;//creating node
+			Node* newNode = new Node(element);//creating node
             newNode->element = element;//setting the newnodes element equal to the element
             newNode->prevNode = tail; //pointing newnode to the tail
-            if(head == NULL){ // if head equals null sets the head and tail to the newNode
+            if(head == nullptr){ // if head equals null sets the head and tail to the newNode
                 head = newNode;
                 tail = newNode; 
             }
             else{
                 tail->nextNode = newNode; //tails next is set to point to the new node
                 tail = newNode; //setting tail to that new newnode
-                tail->nextNode = NULL;
+                tail->nextNode = nullptr;
 				
             }
         };
 		void deleteNode(int position){
-			if(head == NULL){ //if head equals Null that means there is nothing to delete
+			if(head == nullptr){ //if head equals null that means there is nothing to delete
 				cout << "There is no node to delete" << endl;
 				return;
 			}
@@ -68,8 +74,8 @@ class List
 			}
 			else{
 				Node* current = head; //creating node
-            	Node* previous = NULL; //previous
-				for(int i = 0; i < position&& current != NULL; i++){ //loops untill it hits the position and til curent doesn't equal null
+            	Node* previous = nullptr; //previous
+				for(int i = 0; i < position&& current != nullptr; i++){ //loops untill it hits the position and til curent doesn't equal null
 					previous = current; 
 					current = current->nextNode; //moving current to the nextnode
 				}
@@ -78,15 +84,15 @@ class List
 				delete current;
 			}
 		}
-        void displayList(){
-            if(head == NULL){ //if head equals null then print nothing is in the list
+        void displayList()const{
+            if(head == nullptr){ //if head equals null then print nothing is in the list
                 cout << "\n\nThere is nothing List";
 				return;
             }
             else{
                 Node* current = head; //set current to the head
 				int i =0; //node counter
-                while(current != NULL){ //while current doesn't equal to null
+                while(current != nullptr){ //while current doesn't equal to null
 					i++;
 					cout << "\n\n----Node " << i << " with the memory address " << current; //prints memory address
 					cout << current->element; //overloaded operator
@@ -94,19 +100,19 @@ class List
                 }
             }
         }
-		Node* first(){
+		Node* first()const{
 			return head; //returns head 
 		}
 
 		Node* findNode(T& element){
 			Node* p = first(); //gets the head of the list
-			while(p != NULL){ //checks if list is null 
+			while(p != nullptr){ //checks if list is null 
 				if(p->element == element){ //
 					return p; //means that there is only 1 element
 				}
 				p= p->next; //moves to the next node to check
 			}
-			return NULL;
+			return nullptr;
 		}
 		//partition function for quicksort
 		Node* partition(Node* low, Node* high){
@@ -152,6 +158,7 @@ class List
 			swap(i->element, high->element);
 			return i;
     	}
+		
 		//recursive quick sort
 		void quickSort(Node* low, Node* high){
 			if (high != nullptr && low != high && low != high->next) {

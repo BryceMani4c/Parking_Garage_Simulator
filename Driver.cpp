@@ -7,17 +7,20 @@
 #include "LinkedList.h"
 #include "ParkingGarage.h"
 #include "Vehicle.h"
+#include "Storage.h"
 #include <iostream>
 #include <memory>
 #include <cstdlib>
 #include <ctime>
+#include <Vector>
 using namespace std;
 
 void GenerateCar();
+void CreateParkingLot();
+double balance = 200.00;
 
 int main(){
     int day = 1;
-    double Balance = 200.00;
     int choice;
     cout << " _ _ _     _                     " << endl;
     cout << "| | | |___| |___ ___ _____ ___   " << endl;
@@ -33,7 +36,7 @@ int main(){
     while(choice != 5){
         do{
             cout << "\n\n\n>>>> Day " << day << " <<<<\n";
-            cout << "Balance: $" << Balance;
+            cout << "Balance: $" << balance;
             cout << "\nWhat Would you like to do?";
             cout << "\n1. Purchase/Build a lot";
             cout << "\n2. Destroy lot";
@@ -45,38 +48,34 @@ int main(){
 
             switch(choice){
                 case 1:
+                    CreateParkingLot();
                     break;
                 case 2:
+                    
                     break;
                 case 3:
                     break;
                 case 4:
+                    //day to day money calculations
                     cout << "\nCongratulations on finishing Day " << day << "!!";
                     cout << "\nYou ended the day with a balance of $";
-                    cout << Balance;
+                    cout << balance;
                     cout << "\nPress Enter to start the next day!\n";
                     cin.ignore();
                     cin.get();
                     day++;
                     break;
                 case 5:
-                    break;
-                
-            }
-
-        } while(choice != 5 && choice != 4);
-    }
-
-    cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
-    cout << day;
-    cout << " with a balance of $";
-    cout << Balance;
-    cout << "\n\nPress Enter to exit the program...";
-    
-    cin.ignore();
-    cin.get();
-
-    return 0;
+                    cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
+                    cout << day;
+                    cout << " with a balance of $";
+                    cout << balance;
+                    cout << "\n\nPress Enter to exit the program...";
+                    cin.ignore();
+                    cin.get();
+                    break;  
+        }} while(choice != 5);
+    } return 0;
 }
 
 // Will generate a completely custom car
@@ -215,5 +214,41 @@ T GenerateCar(){
 
     // Calls Vehicle constructor with randomly generated values
     return Vehicle(color, make, model, plate, fancyOwner, year);
+};
 
+// Every time called with generate a custom parking lot to hold (space + psapce) number of cars
+void CreateParkingLot(){
+    string name;
+    int space, pspace = 0;
+    bool flag;
+
+    cout << "Insert the name of your new parking lot: ";
+    cin >> name;
+
+    flag = false;
+    do{
+        if(flag == true){
+            cout << "You do not have the funds to purchase that many spaces please try again...\n";
+        };
+        cout << "How many normal parking spaces would you like to construct ($5 each): ";
+        cin >> space;
+        flag = true;
+    }while(balance - space*5 > 0);
+
+    flag = false;
+    do{
+        if(flag == true){
+            cout << "You do not have the funds to purchase that many premium spaces please try again...\n";
+        };
+        cout << "How many Premium Spaces would you like to buy? ($10 each): ";
+        cin >> pspace;
+        flag = true;
+    }while(balance - space*10 > 0);
+
+    balance = (balance - (space*5) - (pspace*10));
+
+    parkingLot<Vehicle> newLot(name, space, pspace);
+    // Add way to add newLot to linked list for garage
+
+    cout << "\nParking lot '" << name << "' created with " << space << " spaces and " << pspace << " premium spaces.\n";
 }

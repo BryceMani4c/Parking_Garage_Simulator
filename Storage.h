@@ -16,25 +16,36 @@ class parkingLot{
         string lotName;
         int spaces;
         int premiumSpaces;
+        List<T> theParkingLot;
 
     public:
+        parkingLot(){
+            lotName = "";
+            spaces = 0;
+            premiumSpaces = 0;
+        }
+
         parkingLot(string inLotName, int inSpaces, int inPremiumSpaces){
             lotName = inLotName;
             spaces = inSpaces;
             premiumSpaces = inPremiumSpaces;
-            LinkedList<T> theParkingLot;
         };
         
-        void append(T){
-            theParkingLot.appendnode(T);
+        void append(T vehicle){
+            theParkingLot.appendNode(vehicle);
         };
         void display(){
+            cout << *this;
+            theParkingLot.displayList();
+        }
 
-        };
-
-    ~LinkedList(){
-    }
-
+        friend ostream& operator<<(ostream& os, const parkingLot<T>& lot) {
+        os << "Parking Lot Name: " << lot.lotName << "\nSpaces: " << lot.spaces << "\nPremium Spaces: " << lot.premiumSpaces;
+        return os;
+        }   
+        
+        ~parkingLot(){
+        }
 };
 
 #endif
