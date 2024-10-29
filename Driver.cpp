@@ -15,12 +15,16 @@
 #include <Vector>
 using namespace std;
 
-void GenerateCar();
+Vehicle GenerateCar();
 void CreateParkingLot();
+void DeleteLot();
+void NewDay();
+void EndGame();
+ParkingGarage garage;
 double balance = 200.00;
+int day = 0;
 
 int main(){
-    int day = 1;
     int choice;
     cout << " _ _ _     _                     " << endl;
     cout << "| | | |___| |___ ___ _____ ___   " << endl;
@@ -31,17 +35,17 @@ int main(){
     cout << "to Parking Garage Simulator, where you can build up your Parking Garage Empire!";
     cout << "\nPress Enter to start!";
     cin.ignore();
-    cout << "You will be starting on Day 1 with a total of $200.00, when you start the day ";
+    cout << "\nYou will be starting on Day 0 with a total of $200.00 to start your empire off!\nOnce you have build your first lot, start the next day!";
 
     while(choice != 5){
         do{
-            cout << "\n\n\n>>>> Day " << day << " <<<<\n";
+            cout << "\n\n>>>> Day " << day << " <<<<\n";
             cout << "Balance: $" << balance;
             cout << "\nWhat Would you like to do?";
             cout << "\n1. Purchase/Build a lot";
             cout << "\n2. Destroy lot";
-            cout << "\n3. Edit/Upgrade lot";
-            cout << "\n4. End the Day";
+            cout << "\n3. View Lot(s)";
+            cout << "\n4. Start the next Day";
             cout << "\n5. End the Program";
             cout << "\nCHOOSE 1-5:  ";
             cin >> choice;
@@ -51,19 +55,12 @@ int main(){
                     CreateParkingLot();
                     break;
                 case 2:
-                    
+                    DeleteLot();
                     break;
                 case 3:
                     break;
                 case 4:
-                    //day to day money calculations
-                    cout << "\nCongratulations on finishing Day " << day << "!!";
-                    cout << "\nYou ended the day with a balance of $";
-                    cout << balance;
-                    cout << "\nPress Enter to start the next day!\n";
-                    cin.ignore();
-                    cin.get();
-                    day++;
+                    NewDay();
                     break;
                 case 5:
                     cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
@@ -78,9 +75,7 @@ int main(){
     } return 0;
 }
 
-// Will generate a completely custom car
-template <typename T>
-T GenerateCar(){
+Vehicle GenerateCar(){
     srand(time(0));
     string color, make, model, plate = "";
     bool fancyOwner = false;
@@ -216,7 +211,6 @@ T GenerateCar(){
     return Vehicle(color, make, model, plate, fancyOwner, year);
 };
 
-// Every time called with generate a custom parking lot to hold (space + psapce) number of cars
 void CreateParkingLot(){
     string name;
     int space, pspace = 0;
@@ -232,8 +226,10 @@ void CreateParkingLot(){
         };
         cout << "How many normal parking spaces would you like to construct ($5 each): ";
         cin >> space;
-        flag = true;
-    }while(balance - space*5 > 0);
+        if(balance - space*5 < 0){
+            flag = true;
+        }
+    }while(balance - space*5 < 0);
 
     flag = false;
     do{
@@ -242,13 +238,72 @@ void CreateParkingLot(){
         };
         cout << "How many Premium Spaces would you like to buy? ($10 each): ";
         cin >> pspace;
-        flag = true;
-    }while(balance - space*10 > 0);
+        if(balance - space*10 < 0){
+            flag = true;
+        }
+    }while(balance - space*10 < 0);
 
     balance = (balance - (space*5) - (pspace*10));
 
     parkingLot<Vehicle> newLot(name, space, pspace);
-    // Add way to add newLot to linked list for garage
+    garage.addParkingLot(newLot);
 
     cout << "\nParking lot '" << name << "' created with " << space << " spaces and " << pspace << " premium spaces.\n";
 }
+
+void DeleteLot(){
+    if(garage.isEmpty()){
+        "\nThere are no Parking Lots to demolish, please select a different choice...\n\n";
+        return;
+    } else{
+        int i = 0;
+        int lots = garage.numberOfLots();
+        while(i <= 0 || i > lots){
+            cout << "Please select which lots you would like to destroy..\n";
+            garage.displayParkingLots();
+            cout << "\n\nlots you wish to destroy: ";
+            cin >> i;
+            if(i <= 0 || i > lots){
+                cout << "Invalid Choice, pleasse try again\n";
+            }
+        }
+        garage.deleteParkingLot(i);
+        cout << "You have sucessfully deleted Parking Garage number " << i << "\n";
+        }
+    }
+
+void NewDay(){
+    cout << "\nCongratulations on finishing Day " << day << "!!";
+    cout << "\nYou ended the day with a balance of $";
+    cout << balance;
+    cout << "\nPress Enter to start the next day!\n";
+    cin.ignore();
+    cin.get();
+    day++;
+
+    srand(time(0));
+    int i = rand() % garage.numberOfLots()*10 + 1;
+    while(i < 10){
+        i++;
+    }
+
+    int j;
+    parkingLot<Vehicle>* targetLot = nullptr;
+    while(i != 0){
+        srand(time(0));
+        j = rand() % garage.numberOfLots() + 1;
+        Vehicle newVehicle = GenerateCar();
+        parkingLot<Vehicle>* selectedLot = garage.getParkingLot(j);
+        selectedLot->append(newVehicle);
+        cout << "done";
+    }}
+
+void EndGame(){
+    cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
+    cout << day;
+    cout << " with a balance of $";
+    cout << balance;
+    cout << "\n\nPress Enter to exit the program...";
+    cin.ignore();
+    cin.get();
+    }

@@ -22,6 +22,14 @@ class Vehicle
         int year;
     public:
         //constructor and deconstructor function
+        Vehicle(){
+            color = "";
+            make = "";
+            model = "";
+            plateID = "";
+            isFancyOwner = false;
+            year = 0;
+        }
         Vehicle(string inColor, string inMake ,string inModel,string inPlateID, bool inIsFancyOwner, int inYear){
             color = inColor;
             make = inMake;

@@ -6,7 +6,6 @@
 
 #ifndef LinkedList_H
 #define LinkedList_H
-
 #include <iostream>
 using namespace std;
 template <typename T>
