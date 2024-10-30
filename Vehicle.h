@@ -39,8 +39,34 @@ class Vehicle
             year = inYear;
         }
         ~Vehicle(){};
-        //Comparative Overloaders
-
+        //Overloaders
+        bool operator<(Vehicle& temp){ 
+            if(this->plateID < temp.plateID){
+                return true;
+            };
+            return false;
+        };
+        bool operator>(Vehicle& temp){ 
+            if(this->plateID > temp.plateID){
+                return true;
+            };
+            return false;
+        };
+        bool operator!=(Vehicle& temp){ 
+            if(this->plateID != temp.plateID){
+                return true;
+            };
+            return false;
+        };
+        friend ostream & operator << (ostream & os, Vehicle temp){
+            os << "\nColor:\t" << temp.color;
+            os << "\nMake:\t" << temp.make;
+            os << "\nModel:\t" << temp.model;
+            os << "\nPlateID:\t" << temp.plateID;
+            os << "\nIs a fancy owner?:\t" << temp.isFancyOwner;
+            os << "\nYear:\t" << temp.year;
+            return os;
+        };
         //getter prototypes
         string getColor();
         string getMake();
@@ -97,8 +123,4 @@ class Vehicle
     void Vehicle::setYear(int newYear){
         year = newYear;
     };
-    bool operator<<(Vehicle& lhs, Vehicle& rhs) {
-    return lhs.getPlateID() < rhs.getPlateID();
-    };
-    
 #endif

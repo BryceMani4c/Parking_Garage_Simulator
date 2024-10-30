@@ -8,35 +8,51 @@
 #define LinkedList_H
 #include <iostream>
 using namespace std;
+
+
+template<typename T>
+class Node{
+	public:
+		T element;
+		Node *nextNode;
+		Node *prevNode;
+		//Not the default constructor however is need when passing a element
+		Node(T elem){
+			this->element = elem;
+			nextNode = nullptr;
+			prevNode = nullptr;
+		}
+		//default constructors when you are not passing an element 
+		Node(){
+			nextNode = nullptr;
+			prevNode = nullptr;
+		};
+		//destructor to delete the element to clean memory
+		~Node(){};
+		/*Node* operator->(){
+			return this;
+		};*/
+
+
+};
+
 template <typename T>
 class List
 {
 	private:
-	//struct to hold the template element and the address to the next node
-		struct Node 
-		{
-			T element;
-			Node *nextNode;
-			Node *prevNode;
-
-			Node(T elem){
-				element = elem;
-				nextNode = nullptr;
-				prevNode = nullptr;
-			}
-		}; 
-
-		Node *head;	
-		Node *tail;		
+		//head and tail
+		Node<T> *head;	
+		Node<T> *tail;	
 
 	public:
-		List()
-		{ 
+		//constructors 
+		List(){ 
 			head = nullptr; 
 			tail = nullptr;
 		}
+		//destructor
 		~List(){
-            Node* nextNode;
+            Node<T>* nextNode;
             while(head != nullptr){ //while the head doesn't equal null
                 nextNode = head->nextNode; //get the node in front of head
 				cout << "\n*****DELETING node with address:   " << head; //printing out the head
@@ -45,7 +61,7 @@ class List
             }
 		};
 		void appendNode(T element){
-			Node* newNode = new Node(element);//creating node
+			Node<T>* newNode = new Node(element);//creating node
             newNode->element = element;//setting the newnodes element equal to the element
             newNode->prevNode = tail; //pointing newnode to the tail
             if(head == nullptr){ // if head equals null sets the head and tail to the newNode
@@ -65,46 +81,46 @@ class List
 				return;
 			}
 			if(position == 0){ //checks if the position is at the head
-				Node *tmp = head; 
+				Node<T>* tmp = head; 
 				head = head->nextNode; //moving head to the address it was pointing to
                 tail = tail->prevNode;
 				cout << "-----DELETING the node " << endl;
 				delete tmp; //deleting tmp aka the start
 			}
 			else{
-				Node* current = head; //creating node
-            	Node* previous = nullptr; //previous
+				Node<T>* current = head; //creating node
+            	Node<T>* previous = nullptr; //previous
 				for(int i = 0; i < position&& current != nullptr; i++){ //loops untill it hits the position and til curent doesn't equal null
 					previous = current; 
 					current = current->nextNode; //moving current to the nextnode
 				}
 				previous->nextNode = current->nextNode; //connects gap after deleting current
-				cout << "-----DELETING the node " << endl; //prints memeory address
+				cout << "-----DELETING the node " << current <<endl; //prints memeory address
 				delete current;
 			}
 		}
-        void displayList()const{
+        void displayList(){
             if(head == nullptr){ //if head equals null then print nothing is in the list
                 cout << "\n\nThere is nothing List";
 				return;
             }
             else{
-                Node* current = head; //set current to the head
+                Node<T>* current = head; //set current to the head
 				int i =0; //node counter
                 while(current != nullptr){ //while current doesn't equal to null
 					i++;
-					cout << "\n\n----Node " << i << " with the memory address " << current; //prints memory address
+					cout << "\n\n---Node " << i << " with the memory address " << current; //prints memory address
 					cout << current->element; //overloaded operator
                     current = current->nextNode; //current is set to the next node which current is point to 
                 }
             }
         }
-		Node* first()const{
+		Node<T>* first(){
 			return head; //returns head 
 		}
 
-		Node* findNode(T& element){
-			Node* p = first(); //gets the head of the list
+		Node<T>* findNode(T& element){
+			Node<T>* p = first(); //gets the head of the list
 			while(p != nullptr){ //checks if list is null 
 				if(p->element == element){ //
 					return p; //means that there is only 1 element
@@ -114,12 +130,12 @@ class List
 			return nullptr;
 		}
 		//partition function for quicksort
-		Node* partition(Node* low, Node* high){
+		Node<T>* partition(Node<T>* low, Node<T>* high){
 			T pivot = high->element; //Pivot point is chosen to be whatever is the "high" node
-			Node* i = low->prev; //first index node to compare with second index node
+			Node<T>* i = low->prevNode; //first index node to compare with second index node
 
 			//for loop that uses a second index to compare the current temp element against pivot
-			for(Node* j = low; j != high; j = j->next){
+			for(Node<T>* j = low; j != high; j = j->nextNode){
 				//If the current element is less than pivot, "increment" index node i
 				if(j->element < pivot){
 					//If at the start of the partition, set index i to low node
@@ -128,7 +144,7 @@ class List
 					}
 					//If not at the null index increment i
 					else{
-						i= i->next;
+						i= i->nextNode;
 					}
 					/*
 						Swaps elements i and j.
@@ -146,7 +162,7 @@ class List
 			//If pivot was less than or equal to pivot, 
 			//increment pivot from the last lesser value to the next greater value in prep for the swap 
 			else{
-				i= i->next;
+				i= i->nextNode;
 			}
 			/*
 				Swaps pivot with whatever was i just got incremented to.
@@ -159,11 +175,11 @@ class List
     	}
 		
 		//recursive quick sort
-		void quickSort(Node* low, Node* high){
-			if (high != nullptr && low != high && low != high->next) {
-				Node* pivot = partition(low, high);
-				quickSort(low, pivot->prev);
-				quickSortU(pivot->next, high);
+		void quickSort(Node<T>* low, Node<T>* high){
+			if (high != nullptr && low != high && low != high->nextNode) {
+				Node<T>* pivot = partition(low, high);
+				quickSort(low, pivot->prevNode);
+				quickSort(pivot->nextNode, high);
 			}
     	}
 		//Wrapper case needed to start with the full linked list

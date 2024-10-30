@@ -48,11 +48,29 @@ class parkingLot{
         theParkingLot = List<Vehicle>();
         }
 
-        friend ostream& operator<<(ostream& os, const parkingLot<T>& lot) {
-        os << "Parking Lot Name: " << lot.lotName << "\nSpaces: " << lot.spaces << "\nPremium Spaces: " << lot.premiumSpaces;
+        friend ostream& operator<<(ostream& os, const parkingLot<T>& lot){
+        os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.spaces << "\nPremium Spaces: " << lot.premiumSpaces;
         return os;
         }   
-        
+        bool operator<(parkingLot& temp){ 
+            if(this->lotName < temp.lotName){
+                return true;
+            };
+            return false;
+        };
+
+        bool operator>(parkingLot& temp){ 
+            if(this->lotName > temp.lotName){
+                return true;
+            };
+            return false;
+        };
+        bool operator!=(parkingLot& temp){ 
+            if(this->lotName != temp.lotName){
+                return true;
+            };
+            return false;
+        };
         ~parkingLot(){
         }
 };

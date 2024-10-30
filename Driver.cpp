@@ -42,17 +42,18 @@ int main(){
     cin.ignore();
     cout << "\nYou will be starting on Day 1 with a total of $200.00 to start your empire off!\nOnce you have build your first lot, start the next day!";
 
-    while(choice != 5){
+    while(choice != 6){
         do{
             cout << "\n\n>>>> Day " << day << " <<<<\n";
             cout << "Balance: $" << balance;
             cout << "\nWhat Would you like to do?";
             cout << "\n1. Purchase/Build a lot";
-            cout << "\n2. Destroy lot";
+            cout << "\n2. Destroy a lot";
             cout << "\n3. View Lot(s)";
-            cout << "\n4. Run the Day";
-            cout << "\n5. End the Program";
-            cout << "\nCHOOSE 1-5:  ";
+            cout << "\n4. Sort Parking Garage by name";
+            cout << "\n5. Run the Day";
+            cout << "\n6. End the Program";
+            cout << "\nCHOOSE 1-6:  ";
             cin >> choice;
 
             switch(choice){
@@ -63,11 +64,17 @@ int main(){
                     DeleteLot();
                     break;
                 case 3:
+                    cout << "Displaying your lots:\n";
+                    garage.displayParkingLots();
                     break;
                 case 4:
-                    NewDay();
+                    cout << "\nSorting Lots by name:\t";
+                    garage.quickSortParking();
                     break;
                 case 5:
+                    NewDay();
+                    break;
+                case 6:
                     cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
                     cout << day;
                     cout << " with a balance of $";
@@ -76,7 +83,7 @@ int main(){
                     cin.ignore();
                     cin.get();
                     break;  
-        }} while(choice != 5);
+        }} while(choice != 6);
     } return 0;
 }
 
@@ -164,7 +171,7 @@ Vehicle GenerateCar(){
     }
 
     // Generates a random model for the car
-    srand (time(NULL));
+    srand(time(NULL));
     randomNumber = distrib(gen);
     switch(randomNumber){
         case 1:
@@ -205,8 +212,8 @@ Vehicle GenerateCar(){
     char randomChar;
     lower = 1;
     upper = 95;
-    for (int i = 0; i < 6; i++) {
-        srand (time(NULL));
+    for(int i = 0; i < 6; i++){
+        srand(time(NULL));
         randomNumber = distrib(gen);
         plate += randomChar;
     }
@@ -276,11 +283,12 @@ void DeleteLot(){
     if(garage.isEmpty()){
         "\nThere are no Parking Lots to demolish, please select a different choice...\n\n";
         return;
-    } else{
+    }
+    else{
         int i = 0;
         int lots = garage.numberOfLots();
         while(i <= 0 || i > lots){
-            cout << "Please select which lots you would like to destroy..\n";
+            cout << "Please select which lots you would like to destroy..(Using the node index)\n";
             garage.displayParkingLots();
             cout << "\n\nlots you wish to destroy: ";
             cin >> i;
@@ -288,8 +296,8 @@ void DeleteLot(){
                 cout << "Invalid Choice, pleasse try again\n";
             }
         }
-        garage.deleteParkingLot(i);
-        cout << "You have sucessfully deleted Parking Garage number " << i << "\n";
+        garage.deleteParkingLot(i-1);
+        cout << "You have sucessfully deleted Parking Lot number " << i << "\n";
         }
     }
 
@@ -299,12 +307,12 @@ void NewDay(){
 
     for(int i = 0; i < numLots; i++){
         parkingLot<Vehicle>* lot = garage.getParkingLot(i);
-        if (lot) {
+        if(lot){
             lot->clear();
             }
         }
 
-    for (int i = 0; i < numLots; i++) {
+    for(int i = 0; i < numLots; i++){
         parkingLot<Vehicle>* lot = garage.getParkingLot(i);
         if (lot) {
             totalSpaces += lot->getSpaces();
@@ -316,20 +324,20 @@ void NewDay(){
     uniform_int_distribution<> carDistrib(lower, upper);
     int numberOfCars = carDistrib(gen);
 
-    for (int i = 0; i < numberOfCars; i++) {
+    for(int i = 0; i < numberOfCars; i++){
         Vehicle newCar = GenerateCar();
         int randomLotIndex = distrib(gen) % numLots;
         parkingLot<Vehicle>* randomLot = garage.getParkingLot(randomLotIndex);
 
-        if (randomLot && randomLot->getSpaces() > 0) {
+        if(randomLot && randomLot->getSpaces() > 0){
             randomLot->append(newCar);
     };
 
     for(int i = 0; i < numLots; i++){
         parkingLot<Vehicle>* lot = garage.getParkingLot(i);
-        if (lot) {
+        if(lot){
             lot->clear();
-            }
+        }
         }
     }
 }

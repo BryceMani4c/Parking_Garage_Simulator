@@ -13,51 +13,53 @@
 #include "Vehicle.h"
 #include <iostream>
 
-class ParkingGarage {
+class ParkingGarage{
 private:
 	List<parkingLot<Vehicle>> parkingLots;
 
 public:
     ParkingGarage() = default;
 
-    void addParkingLot(const parkingLot<Vehicle>& newLot){
+    void addParkingLot(parkingLot<Vehicle>& newLot){
         parkingLots.appendNode(newLot);
     }
 
-    void displayParkingLots()const{
+    void displayParkingLots(){
         parkingLots.displayList();
     }
-
+    void quickSortParking(){
+        parkingLots.quickSortWrapper();
+    };
     void deleteParkingLot(int position){
         parkingLots.deleteNode(position);
     }
 
-    bool isEmpty()const{
+    bool isEmpty(){
         return (parkingLots.first() == nullptr);
     }
 
-    int numberOfLots()const{
+    int numberOfLots(){
         int count = 0;
         auto current = parkingLots.first();
-        while (current != nullptr){
+        while(current != nullptr){
             count++;
             current = current->nextNode;
         } 
         return count;
     }
 
-    parkingLot<Vehicle>* getParkingLot(int index) {
+    parkingLot<Vehicle>* getParkingLot(int index){
         auto current = parkingLots.first();
         int currentIndex = 0;
-        while (current != nullptr) {
-            if (currentIndex == index) {
+        while(current != nullptr){
+            if(currentIndex == index){
                 return &current->element;
             }
             current = current->nextNode;
             currentIndex++;
         }
-    return nullptr;
-    }
+        return nullptr;
+        }
 };
 
 #endif
