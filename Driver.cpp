@@ -290,10 +290,13 @@ void DeleteLot(){
         while(i <= 0 || i > lots){
             cout << "Please select which lots you would like to destroy..(Using the node index)\n";
             garage.displayParkingLots();
-            cout << "\n\nlots you wish to destroy: ";
+            cout << "\n\nEnter the index of the lot you wish to destroy(Or enter 0 to cancel operation): ";
             cin >> i;
-            if(i <= 0 || i > lots){
-                cout << "Invalid Choice, pleasse try again\n";
+            if(i < 0 || i > lots){
+                cout << "Invalid Choice, please try again\n";
+            }
+            if(i==0){
+                return;
             }
         }
         garage.deleteParkingLot(i-1);
