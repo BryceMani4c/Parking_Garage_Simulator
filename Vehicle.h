@@ -59,12 +59,18 @@ class Vehicle
             return false;
         };
         friend ostream & operator << (ostream & os, Vehicle temp){
-            os << "\nColor:\t" << temp.color;
-            os << "\nMake:\t" << temp.make;
-            os << "\nModel:\t" << temp.model;
+            os << "\nColor:\t\t" << temp.color;
+            os << "\nMake:\t\t" << temp.make;
+            os << "\nModel:\t\t" << temp.model;
             os << "\nPlateID:\t" << temp.plateID;
-            os << "\nIs a fancy owner?:\t" << temp.isFancyOwner;
-            os << "\nYear:\t" << temp.year;
+            os << "\nFancy owner?:\t"; 
+            if(temp.isFancyOwner){
+                os << "True";
+            }
+            else{
+                os << "False";
+            };
+            os << "\nYear:\t\t" << temp.year;
             return os;
         };
         //getter prototypes
