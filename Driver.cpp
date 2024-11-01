@@ -105,12 +105,12 @@ Vehicle GenerateCar(){
     string color, make, model, plate = "";
     bool fancyOwner = false;
     int year, randomNumber;
-    lower = 1;
-    upper = 10;
 
     // Generates a random color for Car
-    srand(time(NULL));
-    randomNumber = distrib(gen);
+    lower = 1;
+    upper = 10;
+    uniform_int_distribution<> colordistrib(lower, upper);
+    randomNumber = colordistrib(gen);
     switch(randomNumber){
         case 1:
             color = "Silver";
@@ -143,12 +143,14 @@ Vehicle GenerateCar(){
             color = "Red";
         break;
         default:
-            cout << "error" << endl;
+            cout << randomNumber << endl;
     }
 
     // Generates A random Number for make of the car
-    srand(time(NULL));
-    randomNumber = distrib(gen);
+    lower = 1;
+    upper = 10;
+    uniform_int_distribution<> makedistrib(lower, upper);
+    randomNumber = makedistrib(gen);
     switch(randomNumber){
         case 1:
             make = "Kia";
@@ -181,12 +183,14 @@ Vehicle GenerateCar(){
             make = "Porshe";
         break;
         default:
-            cout << "error" << endl;
+            cout << randomNumber << endl;
     }
 
     // Generates a random model for the car
-    srand(time(NULL));
-    randomNumber = distrib(gen);
+    lower = 1;
+    upper = 10;
+    uniform_int_distribution<> modeldistrib(lower, upper);
+    randomNumber = modeldistrib(gen);
     switch(randomNumber){
         case 1:
             model = "Ranger";
@@ -219,7 +223,7 @@ Vehicle GenerateCar(){
             model = "Porshe";
         break;
         default:
-            cout << "error" << endl;
+            cout << randomNumber << endl;
     }
 
     // Generates a random 6 digit ascii number
@@ -227,16 +231,16 @@ Vehicle GenerateCar(){
     lower = 1;
     upper = 95;
     for(int i = 0; i < 6; i++){
-        srand(time(NULL));
-        randomNumber = distrib(gen);
+        uniform_int_distribution<> platedistrib(lower, upper);
+        randomNumber = platedistrib(gen);
         plate += randomChar;
     }
 
     // gives a 5% chance to be a fancy Owner
     lower = 1;
     upper = 95;
-    srand(time(NULL));
-    randomNumber = distrib(gen);
+    uniform_int_distribution<> fancydistrib(lower, upper);
+    randomNumber = fancydistrib(gen);
     if(randomNumber == 1){
         fancyOwner = true;
     }
@@ -244,9 +248,8 @@ Vehicle GenerateCar(){
     // Randomly generates a car that can be up to 100 years old.
     lower = 1980;
     upper = 2025;
-    uniform_int_distribution<> distrib(lower, upper);
-    srand(time(NULL));
-    year = distrib(gen);
+    uniform_int_distribution<> yeardistrib(lower, upper);
+    year = yeardistrib(gen);
 
     // Calls Vehicle constructor with randomly generated values
     return Vehicle(color, make, model, plate, fancyOwner, year);
@@ -516,52 +519,65 @@ void NewDay(){
     int numLots = garage.numberOfLots();
     int totalSpaces = 0;
 
-    for(int i = 0; i < numLots; i++){
-        parkingLot<Vehicle>* lot = garage.getParkingLot(i);
-        if(lot){
-            lot->clear();
-            }
-        }
-
-    for(int i = 0; i < numLots; i++){
+    // calculates the total number of spaces across all garages
+    for (int i = 0; i < numLots; i++) {
         parkingLot<Vehicle>* lot = garage.getParkingLot(i);
         if (lot) {
-            totalSpaces += lot->getSpaces();
+            totalSpaces += lot->getSpaces() + lot->getPremiumSpaces();
         }
     }
 
-    lower = 5;
-    upper = totalSpaces;
-    uniform_int_distribution<> carDistrib(lower, upper);
-    int numberOfCars = carDistrib(gen);
+    if (totalSpaces == 0) {
+        cout << "No available parking spaces. End of day.\n";
+        return;
+    }
 
+    // dictates how many cars will use the parking garages today
+    int numberOfCars = rand() % (totalSpaces + 1);
+    int numNormal = 0, numPremium = 0;
+
+    // Generate car and assignes it to a parking spot in a random garage
     for(int i = 0; i < numberOfCars; i++){
         Vehicle newCar = GenerateCar();
-        int randomLotIndex = distrib(gen) % numLots;
-        parkingLot<Vehicle>* randomLot = garage.getParkingLot(randomLotIndex);
+        bool carAssigned = false;
+        int attempts = 0;
 
-        if(randomLot && randomLot->getSpaces() > 0){
-            randomLot->append(newCar);
-    };
-
-    for(int i = 0; i < numLots; i++){
-        parkingLot<Vehicle>* lot = garage.getParkingLot(i);
-        if(lot){
-            lot->clear();
+        while(!carAssigned && attempts < numLots){
+            int randomLotIndex = rand() % numLots;
+            parkingLot<Vehicle>* randomLot = garage.getParkingLot(randomLotIndex);
+            if(randomLot){
+                if(newCar.getIsFancyOwner() && randomLot->getPremiumSpaces() > 0){
+                    randomLot->append(newCar);
+                    randomLot->setPremiumSpaces(randomLot->getPremiumSpaces() - 1);
+                    balance += 50;
+                    numPremium++;
+                    carAssigned = true;
+                }else if(!newCar.getIsFancyOwner() && randomLot->getSpaces() > 0){
+                    randomLot->append(newCar);
+                    randomLot->setSpaces(randomLot->getSpaces() - 1);
+                    balance += 5;
+                    numNormal++;
+                    carAssigned = true;
+                }
+            }
+            attempts++;
         }
+    }
+
+    cout << "The day has ended with " << numNormal << " normal and " << numPremium << " premium pass purchases.\n";
+    day++;
+
+    // emptys all the garages at the end of the day
+    for (int i = 0; i < numLots; i++) {
+        parkingLot<Vehicle>* lot = garage.getParkingLot(i);
+        if (lot) {
+            lot->clear();
         }
     }
 }
 
 void EndGame(){
-    cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
-    cout << day;
-    cout << " with a balance of $";
-    cout << balance;
-    cout << "\n\nPress Enter to exit the program...";
-    cin.ignore();
-    cin.get();
-    if(day == 10 && balance == 10000){                                              
+    if(day > 10 && balance > 10000.00){                                              
         cout << endl;                                                         
         cout <<"\n                         _       _     _   _             ";
         cout <<"\n ___ ___ ___ ___ ___ ___| |_ _ _| |___| |_|_|___ ___ ___ ";
@@ -572,7 +588,13 @@ void EndGame(){
         cout <<"\n __ __ _____ _____    _ _ _ _____ _____ ";
         cout <<"\n|  |  |     |  |  |  | | | |     |   | |";
         cout <<"\n|_   _|  |  |  |  |  | | | |  |  | | | |";
-        cout <<"\n  |_| |_____|_____|  |_____|_____|_|___|";
-        cout <<"\nYou beat the game with a total of " << balance;                                     
+        cout <<"\n  |_| |_____|_____|  |_____|_____|_|___|";                                   
     }
+    cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
+    cout << day;
+    cout << " with a balance of $";
+    cout << balance;
+    cout << "\n\nPress Enter to exit the program...";
+    cin.ignore();
+    cin.get();
 }

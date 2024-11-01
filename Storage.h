@@ -18,21 +18,25 @@ template <typename T>
 class parkingLot{
     private:
         string lotName;
-        int spaces;
+        int maxNormalSpaces;
+        int maxPremiumSpaces;
+        int normalSpaces;
         int premiumSpaces;
         List<T> theParkingLot;
 
     public:
         parkingLot(){ //default constructor
             lotName = "";
-            spaces = 0;
+            normalSpaces = 0;
             premiumSpaces = 0;
         }
 
         parkingLot(string inLotName, int inSpaces, int inPremiumSpaces){ //constructor
             lotName = inLotName;
-            spaces = inSpaces;
+            normalSpaces = inSpaces;
             premiumSpaces = inPremiumSpaces;
+            maxNormalSpaces = inSpaces;
+            maxPremiumSpaces = inPremiumSpaces;
         };
         //Linked List Wrapper to append a vehicle to the storage class linked list
         void append(T vehicle){
@@ -50,12 +54,12 @@ class parkingLot{
         void setLotName(string inName){
             lotName = inName;
             return;
-        }
+        };
         int getSpaces(){
-            return spaces;
+            return normalSpaces;
         };
         void setSpaces(int inSpace){
-            spaces = inSpace;
+            normalSpaces = inSpace;
             return;
         };
         int getPremiumSpaces(){
@@ -65,14 +69,19 @@ class parkingLot{
             premiumSpaces = inPremiumSpaces;
             return;
         };
-        //******What does this do? -TM
-        void clear(){
-            theParkingLot = List<Vehicle>();
+
+        // Clears and resets values
+        void clear() {
+            normalSpaces = maxNormalSpaces;
+            premiumSpaces = maxPremiumSpaces;
+            theParkingLot.clear();
         }
+
+
 
         //ostream overload that prints the lot details when the object is attempted to be printed as a node.
         friend ostream& operator<<(ostream& os, const parkingLot<T>& lot){
-            os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.spaces << "\nPremium Spaces: " << lot.premiumSpaces;
+            os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.normalSpaces << "\nPremium Spaces: " << lot.premiumSpaces;
             return os;
         }   
 

@@ -111,6 +111,17 @@ class List
                 }
             }
         }
+		void clear() {
+            Node<T>* current = head;
+            while (current != nullptr) {
+                Node<T>* nextNode = current->nextNode;
+                delete current;
+                current = nextNode;
+            }
+            head = nullptr;
+            tail = nullptr;
+        }
+		
 		Node<T>* first(){
 			return head; //returns head 
 		}
