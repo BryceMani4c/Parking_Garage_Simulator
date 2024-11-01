@@ -35,7 +35,7 @@ public:
     }
 
     bool isEmpty(){
-        return (parkingLots.first() == nullptr);
+        return(parkingLots.first() == nullptr);
     }
 
     int numberOfLots(){
