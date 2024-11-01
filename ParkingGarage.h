@@ -30,12 +30,15 @@ public:
     void quickSortParking(){
         parkingLots.quickSortWrapper();
     };
+    void quickSortParkingDescending(){
+        parkingLots.quickSortWrapperDescending();
+    };
     void deleteParkingLot(int position){
         parkingLots.deleteNode(position);
     }
 
     bool isEmpty(){
-        return (parkingLots.first() == nullptr);
+        return(parkingLots.first() == nullptr);
     }
 
     int numberOfLots(){

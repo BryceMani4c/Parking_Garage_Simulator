@@ -67,13 +67,13 @@ class parkingLot{
         };
         //******What does this do? -TM
         void clear(){
-        theParkingLot = List<Vehicle>();
+            theParkingLot = List<Vehicle>();
         }
 
         //ostream overload that prints the lot details when the object is attempted to be printed as a node.
         friend ostream& operator<<(ostream& os, const parkingLot<T>& lot){
-        os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.spaces << "\nPremium Spaces: " << lot.premiumSpaces;
-        return os;
+            os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.spaces << "\nPremium Spaces: " << lot.premiumSpaces;
+            return os;
         }   
 
         //Comparative operator overloads that compare the lot by name.

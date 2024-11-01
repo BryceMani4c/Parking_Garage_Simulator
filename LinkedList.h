@@ -17,8 +17,8 @@ class Node{
 		Node *nextNode;
 		Node *prevNode;
 		//Not the default constructor however is need when passing a element
-		Node(T elem){
-			this->element = elem;
+		Node(T value){
+			this->element = value;
 			nextNode = nullptr;
 			prevNode = nullptr;
 		}
@@ -29,10 +29,6 @@ class Node{
 		};
 		//destructor to delete the element to clean memory
 		~Node(){};
-		/*Node* operator->(){
-			return this;
-		};*/
-
 
 };
 
@@ -84,7 +80,7 @@ class List
 				Node<T>* tmp = head; 
 				head = head->nextNode; //moving head to the address it was pointing to
                 tail = tail->prevNode;
-				cout << "-----DELETING the node " << endl;
+				cout << "-----DELETING the node " <<  tmp << endl;
 				delete tmp; //deleting tmp aka the start
 			}
 			else{
@@ -173,11 +169,12 @@ class List
 			swap(i->element, high->element);
 			return i;
     	}
-		
+
 		//recursive quick sort
 		void quickSort(Node<T>* low, Node<T>* high){
-			if (high != nullptr && low != high && low != high->nextNode) {
-				Node<T>* pivot = partition(low, high);
+			if(high != nullptr && low != high && high != low && low != high->nextNode){
+				Node<T>* pivot;
+				pivot = partition(low, high);
 				quickSort(low, pivot->prevNode);
 				quickSort(pivot->nextNode, high);
 			}
@@ -185,6 +182,64 @@ class List
 		//Wrapper case needed to start with the full linked list
 		void quickSortWrapper(){
         	quickSort(head, tail); 
+    	}
+
+		//partition function for quicksort
+		Node<T>* partitionDescending(Node<T>* low, Node<T>* high){
+			T pivot = high->element; //Pivot point is chosen to be whatever is the "high" node
+			Node<T>* i = low->prevNode; //first index node to compare with second index node
+
+			//for loop that uses a second index to compare the current temp element against pivot
+			for(Node<T>* j = low; j != high; j = j->nextNode){
+				//If the current element is greater than pivot, "increment" index node i
+				if(j->element > pivot){
+					//If at the start of the partition, set index i to low node
+					if(i == nullptr){
+						i= low;
+					}
+					//If not at the null index increment i
+					else{
+						i= i->nextNode;
+					}
+					/*
+						Swaps elements i and j.
+						Does a redundant swap if i = j, i.e. the partition was already sorted.
+						If i is less than pivot and j is greater than pivot,
+							will swap them to make sure i is always less than pivot
+					*/
+					swap(i->element, j->element);
+				}
+			}
+			//Case if pivot was greater than all the values in the partition
+			if(i == nullptr){
+				i= low;
+			}
+			//If pivot was less than or equal to pivot, 
+			//increment pivot from the last lesser value to the next greater value in prep for the swap 
+			else{
+				i= i->nextNode;
+			}
+			/*
+				Swaps pivot with whatever was i just got incremented to.
+				If all entries were less than the pivot, does a redundant swap at the "high" node
+				If all entries were greater than the pivot, swaps high with low
+				If I was somewhere in the middle, properly sets pivot in between
+			*/
+			swap(i->element, high->element);
+			return i;
+    	}
+		//recursive quick sort
+		void quickSortDescending(Node<T>* low, Node<T>* high){
+			if(high != nullptr && low != high && high != low && low != high->nextNode){
+				Node<T>* pivot; 
+				pivot = partitionDescending(low, high);
+				quickSortDescending(low, pivot->prevNode);
+				quickSortDescending(pivot->nextNode, high);
+			}
+    	}
+		//Wrapper case needed to start with the full linked list
+		void quickSortWrapperDescending(){
+        	quickSortDescending(head, tail); 
     	}
 };
 
