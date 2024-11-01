@@ -23,7 +23,7 @@ void NewDay();
 void EndGame();
 void ModifyLot();
 ParkingGarage garage;
-double balance = 10000;
+double balance = 2000;
 int day = 1;
 random_device rd;
 mt19937 gen(rd());
@@ -41,12 +41,14 @@ int main(){
     cout << "to Parking Garage Simulator, where you can build up your Parking Garage Empire!";
     cout << "\nPress Enter to start!";
     cin.ignore();
-    cout << "\nYou will be starting on Day 1 with a total of $2000.00 to start your empire off!\nOnce you have build your first lot, start the next day!";
+    cout << "\n\n\tTutorial:\n";
+    cout << "\nYou will be starting on Day 1 with a total of $2000.00 to start your empire off!\nOnce you have built your first lot, start the next day!";
     cout << "\nThere are regular and premium spaces.\nOnly fancy drivers will park in premium spaces.";
+    cout << "\nYou have 10 days to make 10k!! Good luck trying to figure out the strategy!";
     cout << "\nPress Enter to continue.";
     cin.ignore();
 
-    while(choice != 7){
+    while(choice != 7 && day < 11){
         do{
             cout << "\n\n>>>> Day " << day << " <<<<\n";
             cout << "Balance: $" << balance;
@@ -100,7 +102,8 @@ int main(){
                     cin.get();
                     break;  
             }
-        }while(choice != 7);
+        }while(choice != 7 && day < 11);
+        EndGame();
     } return 0;
 }
 
@@ -354,9 +357,9 @@ void ModifyLot(){
     
     do{
         cout << "\n\nModifying: "<< garage.getParkingLot(index-1)->getLotname() << endl;
-        cout << "Current Normal Spaces: " << garage.getParkingLot(index-1)->getSpaces() << endl;
-        cout << "Current Premium Spaces: " << garage.getParkingLot(index-1)->getPremiumSpaces() << endl;
-        cout << 100 - garage.getParkingLot(index-1)->getPremiumSpaces() - garage.getParkingLot(index-1)->getSpaces() << " of 100 spaces free.\n";
+        cout << "Current Normal Spaces: " << garage.getParkingLot(index-1)->getMaxSpaces() << endl;
+        cout << "Current Premium Spaces: " << garage.getParkingLot(index-1)->getMaxPremiumSpaces() << endl;
+        cout << 100 - garage.getParkingLot(index-1)->getMaxPremiumSpaces() - garage.getParkingLot(index-1)->getMaxSpaces() << " of 100 spaces free.\n";
         cout << "\n1: Change the name of the lot.";
         cout << "\n2: Build more normal parking spaces.";
         cout << "\n3: Upgrade normal spaces to premium spaces.";
@@ -377,7 +380,7 @@ void ModifyLot(){
                 cout << "\nYou have changed the lot's name\n";
                 break;
             case 2:
-                if(balance < 5 || (garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces()) == 100){
+                if(balance < 5 || (garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces()) == 100){
                     cout << "\nCannot add more normal spaces.\n";
                     break;
                 };
@@ -396,26 +399,26 @@ void ModifyLot(){
                     else{
                         balanceFlag = false;
                     }
-                    if(tempNum + garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces() > 100){
-                        //cout << tempNum + garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces();
+                    if(tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces() > 100){
+                        //cout << tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces();
                         capFlag = true;
                     }
                     else{
                         capFlag = false;
                     }
-                }while(100 < (tempNum + (garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces())) || (balance - (tempNum*5)) < 0);
-                garage.getParkingLot(index-1)->setSpaces(tempNum + garage.getParkingLot(index-1)->getSpaces());
+                }while(100 < (tempNum + (garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces())) || (balance - (tempNum*5)) < 0);
+                garage.getParkingLot(index-1)->setMaxSpaces(tempNum + garage.getParkingLot(index-1)->getMaxSpaces());
                 balance = balance - tempNum*5;
                 break;
                 
             case 3:{
                     int limit = 0;
                     //upgrade regular to premium
-                    cout << "\nThis lot has " << garage.getParkingLot(index-1)->getSpaces() << " normal spaces\n";
+                    cout << "\nThis lot has " << garage.getParkingLot(index-1)->getMaxSpaces() << " normal spaces\n";
                     cout << "\nEach upgrade costs $6, this lot has "; 
-                    if(balance/6 > garage.getParkingLot(index-1)->getSpaces()){
-                        cout << garage.getParkingLot(index-1)->getSpaces() << " spaces that can be upgraded.\n";
-                        limit = garage.getParkingLot(index-1)->getSpaces();
+                    if(balance/6 > garage.getParkingLot(index-1)->getMaxSpaces()){
+                        cout << garage.getParkingLot(index-1)->getMaxSpaces() << " spaces that can be upgraded.\n";
+                        limit = garage.getParkingLot(index-1)->getMaxSpaces();
                     }
                     else{
                         cout << static_cast<int>(balance)/6 << " spaces that can be upgraded.\n";
@@ -428,12 +431,12 @@ void ModifyLot(){
                         cin >> tempNum;
                     }
                     balance = balance - (tempNum*6);
-                    garage.getParkingLot(index-1)->setSpaces(garage.getParkingLot(index-1)->getSpaces()-tempNum);
-                    garage.getParkingLot(index-1)->setPremiumSpaces(garage.getParkingLot(index-1)->getPremiumSpaces()+tempNum);
+                    garage.getParkingLot(index-1)->setMaxSpaces(garage.getParkingLot(index-1)->getMaxSpaces()-tempNum);
+                    garage.getParkingLot(index-1)->setMaxPremiumSpaces(garage.getParkingLot(index-1)->getMaxPremiumSpaces()+tempNum);
                  break;
             }
             case 4:
-                if(balance < 10 || (garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces()) == 100){
+                if(balance < 10 || (garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces()) == 100){
                     cout << "\nCannot add more normal spaces.\n";
                     break;
                 };
@@ -452,24 +455,24 @@ void ModifyLot(){
                     else{
                         balanceFlag = false;
                     }
-                    if(tempNum + garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces() > 100){
-                        //cout << tempNum + garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces();
+                    if(tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces() > 100){
+                        //cout << tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces();
                         capFlag = true;
                     }
                     else{
                         capFlag = false;
                     }
-                }while(100 < (tempNum + (garage.getParkingLot(index-1)->getPremiumSpaces() + garage.getParkingLot(index-1)->getSpaces())) || (balance - (tempNum*10)) < 0);
-                garage.getParkingLot(index-1)->setPremiumSpaces(tempNum + garage.getParkingLot(index-1)->getPremiumSpaces());
+                }while(100 < (tempNum + (garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces())) || (balance - (tempNum*10)) < 0);
+                garage.getParkingLot(index-1)->setMaxPremiumSpaces(tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces());
                 balance = balance - tempNum*10;
                 break;
             
             case 5:
                 {
                     int limit = 0;
-                    cout << "\nThis lot has " << garage.getParkingLot(index-1)->getPremiumSpaces() << " premium spaces\n";
+                    cout << "\nThis lot has " << garage.getParkingLot(index-1)->getMaxPremiumSpaces() << " premium spaces\n";
                     cout << "\nEach downgrade refunds $3";
-                    limit = garage.getParkingLot(index-1)->getPremiumSpaces();
+                    limit = garage.getParkingLot(index-1)->getMaxPremiumSpaces();
                     
                 
                     cout << "\nHow many premium spaces do you want to downgrade? : ";
@@ -479,8 +482,8 @@ void ModifyLot(){
                         cin >> tempNum;
                     }
                     balance = balance + (tempNum*3);
-                    garage.getParkingLot(index-1)->setSpaces(garage.getParkingLot(index-1)->getSpaces()+tempNum);
-                    garage.getParkingLot(index-1)->setPremiumSpaces(garage.getParkingLot(index-1)->getPremiumSpaces()-tempNum);
+                    garage.getParkingLot(index-1)->setMaxSpaces(garage.getParkingLot(index-1)->getMaxSpaces()+tempNum);
+                    garage.getParkingLot(index-1)->setMaxPremiumSpaces(garage.getParkingLot(index-1)->getMaxPremiumSpaces()-tempNum);
                  break;
                 }
             case 6:
@@ -522,7 +525,13 @@ void NewDay(){
     char choice;
     int numLots = garage.numberOfLots();
     int totalSpaces = 0;
-
+    //resets lots. usually redundant but necessary to sync changes if a lot was modified
+    for(int i = 0; i < numLots; i++){
+        parkingLot<Vehicle>* lot = garage.getParkingLot(i);
+        if (lot){
+            lot->clear();
+        }
+    }
     // calculates the total number of spaces across all garages
     for (int i = 0; i < numLots; i++) {
         parkingLot<Vehicle>* lot = garage.getParkingLot(i);
@@ -570,7 +579,7 @@ void NewDay(){
         }
     }
 
-    cout << "The day has ended with " << numNormal << " normal and " << numPremium << " premium pass purchases.\n";
+    cout << "The day has ended with " << numNormal << " normal and " << numPremium << " premium parking pass purchases.\n";
     day++;
 
     cout << "\nWould you like to see details of the cars that chose to park? (y or Y):";
@@ -604,8 +613,7 @@ void EndGame(){
         cout <<"\n|_   _|  |  |  |  |  | | | |  |  | | | |";
         cout <<"\n  |_| |_____|_____|  |_____|_____|_|___|";                                   
     }
-    cout << "\n\nThank you for playing our Garage Simulator! You finished on day ";
-    cout << day;
+    cout << "\n\nThank you for playing our Garage Simulator! You finished on day 10";
     cout << " with a balance of $";
     cout << balance;
     cout << "\n\nPress Enter to exit the program...";

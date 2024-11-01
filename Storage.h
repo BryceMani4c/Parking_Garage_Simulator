@@ -69,9 +69,21 @@ class parkingLot{
             premiumSpaces = inPremiumSpaces;
             return;
         };
+        int getMaxPremiumSpaces(){
+            return maxPremiumSpaces;
+        }
+        void setMaxPremiumSpaces(int inMaxPremiumSpaces){
+            maxPremiumSpaces = inMaxPremiumSpaces;
+        }
+        int getMaxSpaces(){
+            return maxNormalSpaces;
+        }
+        void setMaxSpaces(int inMaxSpaces){
+            maxNormalSpaces = inMaxSpaces;
+        }
 
         // Clears and resets values
-        void clear() {
+        void clear(){
             normalSpaces = maxNormalSpaces;
             premiumSpaces = maxPremiumSpaces;
             theParkingLot.clear();
@@ -81,11 +93,7 @@ class parkingLot{
 
         //ostream overload that prints the lot details when the object is attempted to be printed as a node.
         friend ostream& operator<<(ostream& os, const parkingLot<T>& lot){
-<<<<<<< HEAD
             os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.maxNormalSpaces << "\nPremium Spaces: " << lot.maxPremiumSpaces;
-=======
-            os << "\nParking Lot Name: " << lot.lotName << "\nSpaces: " << lot.normalSpaces << "\nPremium Spaces: " << lot.premiumSpaces;
->>>>>>> 1cf590a2f6b0a0a616173eba7e24e3dafa133f6b
             return os;
         }   
 
