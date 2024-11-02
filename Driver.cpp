@@ -2,6 +2,7 @@
 	Filename:       Driver.cpp
 	Date Created:   Oct 18
 	Author:         Alek,Tobin,Bryson
+    Purpose:        Driver file that houses the main menu and functions relating to game logic
 ******************************************************************/
 
 #include "LinkedList.h"
@@ -25,6 +26,12 @@ void ModifyLot();
 ParkingGarage garage;
 double balance = 2000;
 int day = 1;
+
+/*
+    Random Number Generator was sourced because srand didn't create unique cars fast enough.
+    Different generator was found here:
+    https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
+*/
 random_device rd;
 mt19937 gen(rd());
 int lower, upper;
@@ -104,9 +111,14 @@ int main(){
             }
         }while(choice != 7 && day < 11);
         EndGame();
-    } return 0;
+    }
+    return 0;
 }
-
+/*
+    Function: Generate Car
+    Purpose: Randomly generates a vehicle with attributes (color, make, model, plate(6 character ascii string from ascii))
+    Returns it as a vehicle object.
+*/
 Vehicle GenerateCar(){
     string color, make, model, plate = "";
     bool fancyOwner = false;
@@ -232,10 +244,10 @@ Vehicle GenerateCar(){
             cout << randomNumber << endl;
     }
 
-    // Generates a random 6 digit ascii number
+    // Generates a random 6 digit ascii string, made of numbers, capital letters, and some symbols
     char randomChar;
-    lower = 48;
-    upper = 90;
+    lower = 48; //lower bound of numbers in ascii
+    upper = 90; //upper bound of capital letters in ascii
     for(int i = 0; i < 6; i++){
         uniform_int_distribution<> platedistrib(lower, upper);
         randomChar = static_cast<char>(platedistrib(gen));
@@ -251,23 +263,28 @@ Vehicle GenerateCar(){
         fancyOwner = true;
     }
 
-    // Randomly generates a car that can be up to 100 years old.
+    // Randomly generates year for the car that can be between 1980 and 2025.
     lower = 1980;
     upper = 2025;
     uniform_int_distribution<> yeardistrib(lower, upper);
     year = yeardistrib(gen);
 
-    // Calls Vehicle constructor with randomly generated values
+    //Calls Vehicle constructor with the randomly generated values.
     return Vehicle(color, make, model, plate, fancyOwner, year);
 };
-
+/*
+    Create Parkin Lot function
+    Function to create a lot, define attributes, and create it as an object
+*/
 void CreateParkingLot(){
     string name;
-    int space, pSpace = 0;
+    int space = 0, pSpace = 0;
     bool balanceFlag;
     bool capFlag;
     char choice;
     int lotCapacity = 100;
+
+    //checks if balance is enough to build another lot. Return from func if not enough
     if(balance < 1000){
         cout << "\nSorry, you need at least $1000 to buy another lot\n";
         return;
@@ -275,7 +292,8 @@ void CreateParkingLot(){
     cout << "\nA new lot will cost you $1000. (And can be sold for $800 later)\n";
     cout << "Are you sure you want to buy a lot? (enter Y/N): ";
     cin >> choice;
-    
+
+    //input validation for input
     while(choice != 'y' && choice != 'Y' ){
         if(choice == 'n'|| choice == 'N'){
             return;
@@ -284,23 +302,28 @@ void CreateParkingLot(){
             cout << "\nInvalid input Enter (Y or N)";
             cin >> choice;
         };
-    }
+    };
+    //reduce balance for the lot
     balance -= 1000;
     cout << "Insert the name of your new parking lot: \n";
     cin.ignore();
     getline(cin, name);
     cout << "Lots can hold up to 100 cars.\nYou can have a combination of normal spaces and premium spaces that total up to 100\n";
+    //possibly redundant flag reset
     balanceFlag = false;
     capFlag = false;
+    //do-while loop that uses a flag for capacity and a flag for balance
     do{
         if(capFlag == true){
-            cout << "Your lot cannot hold that many spaces. Please try again\n";
+            cout << "\nYour lot cannot hold that many spaces. Please try again\n";
         }
         if(balanceFlag == true){
-            cout << "You do not have the funds to purchase that many spaces please try again...\n";
+            cout << "\nYou do not have the funds to purchase that many spaces please try again...\n";
         };
-        cout << "How many normal parking spaces would you like to construct ($5 each): ";
-        cin >> space;
+        do{
+            cout << "How many normal parking spaces would you like to construct ($5 each): ";
+            cin >> space;
+        }while(space < 0);
         if(balance - space*5 < 0){
             balanceFlag = true;
         }
@@ -309,11 +332,12 @@ void CreateParkingLot(){
         }
     }while(balance - space*5 < 0 || space > lotCapacity);
     
+    //reset flags for premium spaces
     balanceFlag = false;
     capFlag = false;
     do{
         if(capFlag == true){
-            cout << "Your lot cannot hold that many spaces. Please try again";
+            cout << "\nYour lot cannot hold that many spaces. Please try again";
         }
         if(balanceFlag == true){
             if(balance - space*5 < 10){
@@ -321,25 +345,33 @@ void CreateParkingLot(){
                 pSpace = 0;
                 break;
             }
-            cout << "You do not have the funds to purchase that many premium spaces please try again...\n";
+            cout << "\nYou do not have the funds to purchase that many premium spaces please try again...\n";
         };
-        cout << "How many Premium Spaces would you like to buy? ($10 each): ";
-        cin >> pSpace;
+        do{
+            cout << "\nHow many Premium Spaces would you like to buy? ($10 each): ";
+            cin >> pSpace;
+        }while(pSpace < 0);
         if((balance - (space*5 + pSpace*10)) < 0){
             balanceFlag = true;
         }
         if(space + pSpace > lotCapacity){
             capFlag = true;
         }
-    }while((balance - (space*5 + pSpace*10)) < 0 || (space + pSpace > lotCapacity));
+    }while((balance - (space*5 + pSpace*10)) < 0 || (space + pSpace > lotCapacity));//while statement considers both regular spaces and premium
 
-    balance = (balance - (space*5) - (pSpace*10));
+    balance = (balance - (space*5) - (pSpace*10)); //correctly lower overall balance
 
-    parkingLot<Vehicle> newLot(name, space, pSpace);
-    garage.addParkingLot(newLot);
+    parkingLot<Vehicle> newLot(name, space, pSpace); //create a new lot with the temp name and spaces that were logically correct
+    garage.addParkingLot(newLot); //adds the lot to the parking garage
 
     cout << "\nParking lot '" << name << "' created with " << space << " spaces and " << pSpace << " premium spaces.\n";
 }
+
+/*
+    Function: ModifyLot
+    Purpose: Menu Logic to modify and upgrade a lot
+    uses accessors to modify the selected lot
+*/
 
 void ModifyLot(){
     int index;
@@ -348,13 +380,19 @@ void ModifyLot(){
     bool balanceFlag;
     string tempName;
     int tempNum;
+    //checks if garage is empty
+    if(garage.isEmpty()){
+        cout << "\nThere is no lot to modify!\n";
+        return;
+    }
     garage.displayParkingLots();
     cout << "\nChose lot to modify using the index (or enter 0 to quit): ";
     cin >> index;
+    //quit case
     if(index == 0){
         return;
     }
-    
+    //looping menu that displays details and options
     do{
         cout << "\n\nModifying: "<< garage.getParkingLot(index-1)->getLotname() << endl;
         cout << "Current Normal Spaces: " << garage.getParkingLot(index-1)->getMaxSpaces() << endl;
@@ -368,11 +406,13 @@ void ModifyLot(){
         cout << "\n6. Exit modify/upgrade.";
         cout << "\nSelect menu options using (1-6): ";
         cin >> choice;
-        bool capFlag =  false;
-        bool balanceFlag = false;
-        
+        capFlag =  false;
+        balanceFlag = false;
+
+        //switch case that holds all of the logic
         switch(choice){
             case 1: 
+                //Case to change lot name. Simple enough
                 cout << "\n1: What would you change the name of the lot to? : ";
                 cin.ignore();
                 getline(cin,tempName);
@@ -380,6 +420,7 @@ void ModifyLot(){
                 cout << "\nYou have changed the lot's name\n";
                 break;
             case 2:
+                //build more normal spaces. Reuses logic from original logic for lot creation, but has to consider the premium spots in it's first pass
                 if(balance < 5 || (garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces()) == 100){
                     cout << "\nCannot add more normal spaces.\n";
                     break;
@@ -391,8 +432,10 @@ void ModifyLot(){
                     if(balanceFlag == true){
                         cout << "\nYou do not have the funds to purchase that many spaces please try again...\n";
                     };
-                    cout << "\n2: How many more normal spaces would you like to buy?: ";
-                    cin >> tempNum;
+                    do{
+                        cout << "\n2: How many more normal spaces would you like to buy?: ";
+                        cin >> tempNum;
+                    }while(tempNum < 0);
                     if((balance - (tempNum*5)) < 0){
                         balanceFlag = true;
                     }
@@ -400,7 +443,6 @@ void ModifyLot(){
                         balanceFlag = false;
                     }
                     if(tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces() > 100){
-                        //cout << tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces();
                         capFlag = true;
                     }
                     else{
@@ -413,9 +455,10 @@ void ModifyLot(){
                 
             case 3:{
                     int limit = 0;
-                    //upgrade regular to premium
+                    //upgrade regular to premium logic.
                     cout << "\nThis lot has " << garage.getParkingLot(index-1)->getMaxSpaces() << " normal spaces\n";
                     cout << "\nEach upgrade costs $6, this lot has "; 
+                    //if else that tells the user how many spaces can be upgraded, whether the limit is balance or capacity
                     if(balance/6 > garage.getParkingLot(index-1)->getMaxSpaces()){
                         cout << garage.getParkingLot(index-1)->getMaxSpaces() << " spaces that can be upgraded.\n";
                         limit = garage.getParkingLot(index-1)->getMaxSpaces();
@@ -424,18 +467,20 @@ void ModifyLot(){
                         cout << static_cast<int>(balance)/6 << " spaces that can be upgraded.\n";
                         limit = static_cast<int>(balance)/6;
                     }
-                    cout << "\nHow many spaces do you want to upgrade? : ";
-                    cin >> tempNum;
+                        cout << "\nHow many spaces do you want to upgrade? : ";
+                        cin >> tempNum;
                     while(tempNum > limit || tempNum < 0){
                         cout << "\nInvalid choice, try again: ";
                         cin >> tempNum;
                     }
+                    //update lot attributes
                     balance = balance - (tempNum*6);
                     garage.getParkingLot(index-1)->setMaxSpaces(garage.getParkingLot(index-1)->getMaxSpaces()-tempNum);
                     garage.getParkingLot(index-1)->setMaxPremiumSpaces(garage.getParkingLot(index-1)->getMaxPremiumSpaces()+tempNum);
                  break;
             }
             case 4:
+                //same as case 2
                 if(balance < 10 || (garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces()) == 100){
                     cout << "\nCannot add more normal spaces.\n";
                     break;
@@ -447,8 +492,10 @@ void ModifyLot(){
                     if(balanceFlag == true){
                         cout << "\nYou do not have the funds to purchase that many spaces please try again...\n";
                     };
-                    cout << "\n2: How many more premium spaces would you like to buy?: ";
-                    cin >> tempNum;
+                    do{
+                        cout << "\n2: How many more premium spaces would you like to buy?: ";
+                        cin >> tempNum;
+                    }while(tempNum < 0);
                     if((balance - (tempNum*10)) < 0){
                         balanceFlag = true;
                     }
@@ -456,7 +503,6 @@ void ModifyLot(){
                         balanceFlag = false;
                     }
                     if(tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces() > 100){
-                        //cout << tempNum + garage.getParkingLot(index-1)->getMaxPremiumSpaces() + garage.getParkingLot(index-1)->getMaxSpaces();
                         capFlag = true;
                     }
                     else{
@@ -468,6 +514,7 @@ void ModifyLot(){
                 break;
             
             case 5:
+                //same as case 3
                 {
                     int limit = 0;
                     cout << "\nThis lot has " << garage.getParkingLot(index-1)->getMaxPremiumSpaces() << " premium spaces\n";
@@ -487,16 +534,19 @@ void ModifyLot(){
                  break;
                 }
             case 6:
-                cout <<"\nThank you for Modifying your ParkingLot"; 
+                cout <<"\nYou've finished Modifying your ParkingLot"; 
                 
                 break;
         }
     }while(choice != 6);
-};
-
+}
+/*
+    Function: Delete lot
+    Purpose: Displays lots, and asks the user to input an idex to delete the specific lot.
+*/
 void DeleteLot(){
     if(garage.isEmpty()){
-        "\nThere are no Parking Lots to demolish, please select a different choice...\n\n";
+        cout << "\nThere are no Parking Lots to demolish, please select a different choice...\n\n";
         return;
     }
     else{
@@ -514,63 +564,72 @@ void DeleteLot(){
                 return;
             }
         }
+        //calls the delete and refunds 800
         garage.deleteParkingLot(i-1);
         cout << "You have sucessfully deleted Parking Lot number " << i << "\n";
         cout << "You have been refunded $800\n";
         balance += 800;
         }
-    }
-
+}
+/*
+    Function: New Day
+    Purpose: Per day logic that decides how many spots to fill and calls the car generator to add the vehicle objects to the lot's linked list
+*/
 void NewDay(){
     char choice;
     int numLots = garage.numberOfLots();
     int totalSpaces = 0;
     //resets lots. usually redundant but necessary to sync changes if a lot was modified
     for(int i = 0; i < numLots; i++){
-        parkingLot<Vehicle>* lot = garage.getParkingLot(i);
-        if (lot){
+        parkingLot<Vehicle>* lot;
+        lot = garage.getParkingLot(i);
+        if (lot != nullptr){
             lot->clear();
         }
     }
     // calculates the total number of spaces across all garages
-    for (int i = 0; i < numLots; i++) {
-        parkingLot<Vehicle>* lot = garage.getParkingLot(i);
-        if (lot) {
+    for(int i = 0; i < numLots; i++){
+        parkingLot<Vehicle>* lot;
+        lot = garage.getParkingLot(i);
+        if(lot != nullptr){
             totalSpaces += lot->getSpaces() + lot->getPremiumSpaces();
         }
     }
 
-    if (totalSpaces == 0) {
-        cout << "No available parking spaces. End of day.\n";
+    if(totalSpaces == 0){
+        cout << "You have no lots! Please buy a lot before running the day. Or exit the if you can't afford one\n";
         return;
     }
 
-    // dictates how many cars will use the parking garages today
+    //Dictates how many cars will use the parking garages today
     int minCars = static_cast<int>(totalSpaces * 0.7); //int representing 70% of total spaces
     int maxCars = static_cast<int>(totalSpaces * 0.95); //int representing 95% of total spaces
     int numberOfCars = rand() % (maxCars - minCars + 1) + minCars;
     int numNormal = 0, numPremium = 0;
 
-    // Generate car and assignes it to a parking spot in a random garage
+    //Calls the generate car func and assignes it to a parking spot in a random garage
     for(int i = 0; i < numberOfCars; i++){
         Vehicle newCar = GenerateCar();
         bool carAssigned = false;
         int attempts = 0;
-
+        //while loop that attempts to place the genereated car in a garage
         while(!carAssigned && attempts < numLots){
+            //Randomly decided which lot to insert car into
             int randomLotIndex = rand() % numLots;
             parkingLot<Vehicle>* randomLot = garage.getParkingLot(randomLotIndex);
-            if(randomLot){
+            if(randomLot != nullptr){
+                //Checks if fancy owner and if there is a space for premium owner
                 if(newCar.getIsFancyOwner() && randomLot->getPremiumSpaces() > 0){
                     randomLot->append(newCar);
-                    randomLot->setPremiumSpaces(randomLot->getPremiumSpaces() - 1);
-                    balance += 50;
+                    randomLot->setPremiumSpaces(randomLot->getPremiumSpaces() - 1);//reduce empty premium spaces in that lot for later passes
+                    balance += 50; //gain $50 from the fancy car owner
                     numPremium++;
                     carAssigned = true;
+                //If car isn't fancy owner (normal owner) and there is enough space for car owne
                 }else if(!newCar.getIsFancyOwner() && randomLot->getSpaces() > 0){
                     randomLot->append(newCar);
-                    randomLot->setSpaces(randomLot->getSpaces() - 1);
-                    balance += 5;
+                    randomLot->setSpaces(randomLot->getSpaces() - 1);//reduce normal emtpy spaces in that lot for later passes
+                    balance += 5; //gain 5 from the car owner
                     numNormal++;
                     carAssigned = true;
                 }
@@ -582,7 +641,8 @@ void NewDay(){
     cout << "The day has ended with " << numNormal << " normal and " << numPremium << " premium parking pass purchases.\n";
     day++;
 
-    cout << "\nWould you like to see details of the cars that chose to park? (y or Y):";
+    //Ask the user if they would like to see the cars that parked in all of their lots that day
+    cout << "\nWould you like to see details of the cars that chose to park? (Y/N):";
     cin >> choice;
     if(choice == 'y'|| choice == 'Y'){
         for(int i = 0; i < numLots; i++){
@@ -598,7 +658,10 @@ void NewDay(){
         }
     }
 }
-
+/*
+    Function: End Game
+    Purpse: called at the end of Day 10 to see if the player won or lost
+*/
 void EndGame(){
     if(day > 10 && balance > 10000.00){                                              
         cout << endl;                                                         
@@ -611,12 +674,28 @@ void EndGame(){
         cout <<"\n __ __ _____ _____    _ _ _ _____ _____ ";
         cout <<"\n|  |  |     |  |  |  | | | |     |   | |";
         cout <<"\n|_   _|  |  |  |  |  | | | |  |  | | | |";
-        cout <<"\n  |_| |_____|_____|  |_____|_____|_|___|";                                   
+        cout <<"\n  |_| |_____|_____|  |_____|_____|_|___|";   
+        cout << "\n\nThank you for playing our Garage Simulator! You finished on day 10";
+        cout << " with a balance of $";
+        cout << balance;
+        cout << "\n\nPress Enter to exit the program...";
+        cin.ignore();
+        cin.get();
     }
+    else if(day > 10){
+    cout <<"\n                                              "; 
+    cout <<"\n __ __ _____ _____    __    _____ _____ _____ ";
+    cout <<"\n|  |  |     |  |  |  |  |  |     |   __|   __|";
+    cout <<"\n|_   _|  |  |  |  |  |  |__|  |  |__   |   __|";
+    cout <<"\n  |_| |_____|_____|  |_____|_____|_____|_____|";
+    cout <<"\n                                              ";
     cout << "\n\nThank you for playing our Garage Simulator! You finished on day 10";
     cout << " with a balance of $";
     cout << balance;
     cout << "\n\nPress Enter to exit the program...";
     cin.ignore();
     cin.get();
+    
+    
+    }
 }

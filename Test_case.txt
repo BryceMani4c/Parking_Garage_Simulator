@@ -1,0 +1,169 @@
+Quit case:
+    Tests:
+        -leaving the game early
+        -Sellign your first lot wihtout enough money to buy another
+            And canceling the sell first
+    _enter_
+    _enter_
+    1
+    y
+    lot1
+    0
+    100
+    3
+    0
+    3
+    1
+    1
+    6
+    7
+    _enter_
+
+Losing case:
+    Tests: 
+    -running a day with no lot
+    -losing the game
+    -During lot creation:
+        saying no to the lot gen
+        attempting to buy more normal spots than you can hold or afford. As well as negative input
+        attempting to buy more premium spots than you can hold or afford
+        attempting to buy a lot without $1000
+    -Modify Lot:
+        trying to modify a lot without empty garage
+    -View Lot:
+        Trying to view a lot with empty garage
+    -Destroy Lot:
+        Trying to destroy a lot with empty garage
+    -Sort Lots:
+        cancel case
+        trying to sort with empty garage (no error message, but doesn't crash)
+    -Run Day:
+        tests y and Y, and
+
+    _enter_
+    _enter_
+    6
+    1
+    n
+    2
+    3
+    4
+    5
+    0
+    5
+    1
+    5
+    2
+    1
+    y
+    lot1
+    101
+    -1
+    1
+    100
+    -1
+    1
+    6
+    y
+    6
+    Y
+    6
+    n 
+    6
+    N
+    6
+    t
+    6
+    e
+    6
+    n
+    6
+    n
+    6
+    n
+    6
+    n
+
+Winning Case:
+    Tests:
+    -Winning the game
+        Strategy is to build 4 full lots of 95 regular and 5 premium and coast after
+    -sorting lots both ways
+    -Building more than one lot
+    -Upgrade/Modify
+        Adding regular spots
+        upgrade spots to premium
+        Adding premium spots
+        downgrading spots
+    -View Lots
+        With multiple Lots
+    -Run Day    
+        View cars with one lot
+        View cars with multiple lots
+
+
+
+    _enter_
+    _enter_
+    1 
+    y
+    Lot5
+    95
+    5
+    6
+    Y
+    6
+    N
+    1
+    y
+    Lot2
+    50
+    2
+    6
+    n
+    2
+    2
+    2
+    45
+    3
+    3
+    4
+    3
+    5
+    3
+    3
+    6
+    4
+    6
+    y
+    1
+    y 
+    Lot0
+    95
+    5
+    6
+    n
+    4
+    5
+    1
+    4
+    5
+    2
+    4
+    1
+    Y
+    Lot9
+    95
+    5
+    6
+    N
+    6
+    N
+    6
+    N
+    6
+    N
+    6
+    N
+    _enter_
+

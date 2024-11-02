@@ -12,9 +12,13 @@
 #define Storage_h
 #include "Vehicle.h"
 #include "LinkedList.h"
+/*
+    Class: parkingLot
+    purpose: class that hold the atributes to the parkinglot along with getters and setters for the parkinglot.
+    and comparative operator overloads for lotname, and accessors.
 
+*/
 template <typename T>
-
 class parkingLot{
     private:
         string lotName;
@@ -25,50 +29,50 @@ class parkingLot{
         List<T> theParkingLot;
 
     public:
-        parkingLot(){ //default constructor
-            lotName = "";
-            normalSpaces = 0;
-            premiumSpaces = 0;
-        }
-
+        /*
+            Constructors and deconstructor
+        */
+        parkingLot(){}
         parkingLot(string inLotName, int inSpaces, int inPremiumSpaces){ //constructor
             lotName = inLotName;
             normalSpaces = inSpaces;
             premiumSpaces = inPremiumSpaces;
             maxNormalSpaces = inSpaces;
             maxPremiumSpaces = inPremiumSpaces;
-        };
+        }
+        ~parkingLot(){
+        }
         //Linked List Wrapper to append a vehicle to the storage class linked list
         void append(T vehicle){
             theParkingLot.appendNode(vehicle);
-        };
-        //******redundant? - TM
+        }
+        //Displays Current lot details. Calls os overload. Also calls the display list function from linked list, which uses the os overload in the vehicle object.
         void display(){
-            cout << *this;
+            cout << endl << endl<< "LotName: " << lotName;
             theParkingLot.displayList();
-        };
+        }
         //Getters and setters
         string getLotname(){
             return this->lotName;
-        };
+        }
         void setLotName(string inName){
             lotName = inName;
             return;
-        };
+        }
         int getSpaces(){
             return normalSpaces;
-        };
+        }
         void setSpaces(int inSpace){
             normalSpaces = inSpace;
             return;
-        };
+        }
         int getPremiumSpaces(){
             return premiumSpaces;
-        };
+        }
         void setPremiumSpaces(int inPremiumSpaces){
             premiumSpaces = inPremiumSpaces;
             return;
-        };
+        }
         int getMaxPremiumSpaces(){
             return maxPremiumSpaces;
         }
@@ -103,21 +107,19 @@ class parkingLot{
                 return true;
             };
             return false;
-        };
+        }
 
         bool operator>(parkingLot& temp){ 
             if(this->lotName > temp.lotName){
                 return true;
             };
             return false;
-        };
+        }
         bool operator!=(parkingLot& temp){ 
             if(this->lotName != temp.lotName){
                 return true;
             };
             return false;
-        };
-        ~parkingLot(){
         }
 };
 
